@@ -74,22 +74,40 @@ for var in dic_valores.keys():
 problem.addConstraint(AllDifferentConstraint(), dic_valores.keys())
 
 #almacenaje uno encima de otro
-def uno_encima_de_otro():
-    for var1 in range(1, len(dic_valores.keys())+1):
+def uno_encima_de_otro(*args):
+    var_list = [args]
+    for var1 in range(1, len(var_list)+1):
         counter_var = 0
-        for var2 in range(1, len(dic_valores.keys()) + 1):
+        for var2 in range(1, len(var_list) + 1):
             if var1 != var2:
-                for i in range(0, len(matriz_celdas)):
-                    for j in range(0, len(matriz_celdas[0])):
-                        # añadir lo de and var1 not sobre suelo en el if
-                        if dic_valores.keys()[str(var1)] == i + j and dic_valores.keys()[str(var2)] != i + j + len(dic_valores.keys()):
+                for m in range(0, len(matriz_celdas)-1):
+                    for n in range(0, len(matriz_celdas[0])):
+                        if matriz_celdas[i+1][j] != 'X' and var_list[var1] == i + j and var_list[var2] != i + j + len(var_list):
                             counter_var += 1
-        if counter_var == len(dic_valores.keys())-1:
+        if counter_var == len(var_list)-1:
             return False
     return True
+problem.addConstraint(uno_encima_de_otro, dic_valores.keys())
 
+def puerto1_arriba(*args):
+    var_list = [args]
+    for var1 in range(1, len(var_list)+1):
+        for var2 in range(1, len(var_list) + 1):
+            for var3 in range(1, len(var_list) + 1):
+                if var1 != var2 and var1 != var3 and var2 != var3:
+                    for o in range(0, len(matriz_celdas)):
+                        for p in range(0, len(matriz_celdas[0])):
+                            if ((var_list[var1] == i + j and dic_valores[var_list[var1]][0] == 1) and (var_list[var2] != i + j + len(var_list) and dic_valores[var_list[var2]][0] == 2)) and (var_list[var3] != i + j + len(var_list) and dic_valores[var_list[var3]][0] != 2):
+                                return False
+    return True
+problem.addConstraint(puerto1_arriba, dic_valores.keys())
 
+def todas_asignadas(*args):
+    return all(variable in list(args) for variable in dominio1)
 
+problem.addConstraint(todas_asignadas, dic_valores.keys())
+
+print(problem.getSolutions())
 
 
 
