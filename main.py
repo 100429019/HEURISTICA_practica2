@@ -10,19 +10,49 @@ dominio1 = []
 dominio2 = []
 matriz_celdas = []
 i = 0
+counter_i = 0
+counter_j = 0
+M = 0
+N = 0
+try:
+    with open(MAPA, "r+", encoding='utf-8', newline="") as file:
+        for line in file:
+            counter_j = 0
+            for character in line:
+                if character != ' ' and character != '\r' and character != '\n':
+                    counter_j += 1
+            if counter_j > N:
+                N = counter_j
+            counter_i += 1
+        M = counter_i
+except FileNotFoundError as ex:
+    raise Exception("Wrong file or file path\n") from ex
+print(M)
+print(N)
 counter = 0
 try:
     with open(MAPA, "r+", encoding='utf-8', newline="") as file:
         for line in file:
             matriz_celdas.append([])
+            prev_character = 'X'
+            j = 0
             for character in line:
-                if character != ' ' and character != '\r' and character != '\n':
-                    matriz_celdas[i].append(character)
-                    if character != 'X':
+                if (prev_character == ' ' or character != ' ' or (j == 0 and character == ' ' [0] == character)) and character != '\r' and character != '\n':
+                    if character == ' ':
+                        matriz_celdas[i].append('X')
+                    else:
+                        matriz_celdas[i].append(character)
+                    prev_character = 'X'
+                    if character != 'X' and character != ' ':
                         dominio1.append(counter)
                         if character == 'E':
                             dominio2.append(counter)
                     counter += 1
+                if character == ' ':
+                    prev_character = ' '
+                j += 1
+            if len(matriz_celdas[i]) < N:
+                matriz_celdas[i].append('X')
             i += 1
         print(dominio1)
         print(dominio2)
@@ -48,17 +78,17 @@ except FileNotFoundError as ex:
 problem = Problem()
 
 #si hay una X por medio del mapa no se pueden poner contenedores encima
-for i in range(0, len(matriz_celdas)-1):
-    for j in range(0, len(matriz_celdas[0])):
+for i in range(0, M-1):
+    for j in range(0, N):
         if matriz_celdas[i][j] == 'X' and matriz_celdas[i+1][j] != 'X':
-            k = (i-1) * len(matriz_celdas[0]) + j
+            k = (i-1) * N + j
             matriz_celdas[i][j] = '-'
-            while k <= 0:
+            while k >= 0:
                 print(k)
                 dominio1.remove(k)
                 if k in dominio2:
                     dominio2.remove(k)
-                k -= len(matriz_celdas[0])
+                k -= N
 print(dominio1)
 print(dominio2)
 print(matriz_celdas)
@@ -80,8 +110,8 @@ def uno_encima_de_otro(*args):
         counter_var = 0
         for var2 in range(1, len(var_list) + 1):
             if var1 != var2:
-                for m in range(0, len(matriz_celdas)-1):
-                    for n in range(0, len(matriz_celdas[0])):
+                for m in range(0, M-1):
+                    for n in range(0, N):
                         if matriz_celdas[i+1][j] != 'X' and var_list[var1] == i + j and var_list[var2] != i + j + len(var_list):
                             counter_var += 1
         if counter_var == len(var_list)-1:
@@ -95,8 +125,8 @@ def puerto1_arriba(*args):
         for var2 in range(1, len(var_list) + 1):
             for var3 in range(1, len(var_list) + 1):
                 if var1 != var2 and var1 != var3 and var2 != var3:
-                    for o in range(0, len(matriz_celdas)):
-                        for p in range(0, len(matriz_celdas[0])):
+                    for o in range(0, M):
+                        for p in range(0, N):
                             if ((var_list[var1] == i + j and dic_valores[var_list[var1]][0] == 1) and (var_list[var2] != i + j + len(var_list) and dic_valores[var_list[var2]][0] == 2)) and (var_list[var3] != i + j + len(var_list) and dic_valores[var_list[var3]][0] != 2):
                                 return False
     return True
@@ -108,6 +138,3 @@ def todas_asignadas(*args):
 problem.addConstraint(todas_asignadas, dic_valores.keys())
 
 print(problem.getSolutions())
-
-
-
