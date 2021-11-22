@@ -3,7 +3,7 @@ import sys
 import os
 from pathlib import Path
 
-PATH = str(Path.home()) + "/" + sys.argv[1] + "/"
+PATH = sys.argv[1] + "/"
 MAPA = PATH + sys.argv[2]
 CONTENEDORES = PATH + sys.argv[3]
 dominio1 = []
