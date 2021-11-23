@@ -105,36 +105,66 @@ problem.addConstraint(AllDifferentConstraint(), dic_valores.keys())
 
 #almacenaje uno encima de otro
 def uno_encima_de_otro(*args):
-    var_list = [args]
-    for var1 in range(1, len(var_list)+1):
+    var_list = []
+    for elements in args:
+        var_list.append(elements)
+    #print('a' + str(len(var_list)))
+    for var1 in range(0, len(var_list)):
+        #print('b'+str(var_list[var1]))
         counter_var = 0
-        for var2 in range(1, len(var_list) + 1):
+        for var2 in range(0, len(var_list)):
             if var1 != var2:
                 for m in range(0, M-1):
                     for n in range(0, N):
                         if matriz_celdas[i+1][j] != 'X' and var_list[var1] == i + j and var_list[var2] != i + j + len(var_list):
                             counter_var += 1
         if counter_var == len(var_list)-1:
+            print(False)
             return False
+    print(True)
     return True
 problem.addConstraint(uno_encima_de_otro, dic_valores.keys())
 
 def puerto1_arriba(*args):
-    var_list = [args]
-    for var1 in range(1, len(var_list)+1):
-        for var2 in range(1, len(var_list) + 1):
-            for var3 in range(1, len(var_list) + 1):
+    var_list = []
+    for elements in args:
+        var_list.append(elements)
+    keys = list(dic_valores.keys())
+    #print(len(var_list))
+    #print(var_list)
+    for var1 in range(0, len(var_list)):
+        #print('u' + keys[var1])
+        for var2 in range(0, len(var_list)):
+            #print('uu' + keys[var2])
+            for var3 in range(0, len(var_list)):
+                #print('uuu' + keys[var3])
                 if var1 != var2 and var1 != var3 and var2 != var3:
+                    #print('var1: ' + str(var1) + ' var2: ' + str(var2) + ' var3: ' + str(var3))
                     for o in range(0, M):
                         for p in range(0, N):
-                            if ((var_list[var1] == i + j and dic_valores[var_list[var1]][0] == 1) and (var_list[var2] != i + j + len(var_list) and dic_valores[var_list[var2]][0] == 2)) and (var_list[var3] != i + j + len(var_list) and dic_valores[var_list[var3]][0] != 2):
+                            if ((var_list[var1] == o + p and dic_valores[keys[var1]][0] == 1) and (var_list[var2] == o + p + len(var_list) and dic_valores[keys[var2]][0] == 2)) and (var_list[var3] == o + p + 2*len(var_list) and dic_valores[keys[var3]][0] != 2):
+                                print('False2')
                                 return False
+    print('True2')
     return True
 problem.addConstraint(puerto1_arriba, dic_valores.keys())
 
 def todas_asignadas(*args):
-    return all(variable in list(args) for variable in dominio1)
+    counter_vars = 0
+    for value in dominio1:
+        if value in list(args):
+            counter_vars += 1
+    if counter_vars == len(dic_valores.keys()):
+        print('True3')
+        return True
+    print('False3')
+    return False
+    #if all(variable in list(args) for variable in dominio1):
+    #    print('True3')
+    #    return True
+    #print('False3')
+    #return False
 
 problem.addConstraint(todas_asignadas, dic_valores.keys())
 
-print(problem.getSolutions())
+print(problem.getSolution())
