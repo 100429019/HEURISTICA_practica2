@@ -99,7 +99,6 @@ for var in dic_valores.keys():
         problem.addVariable(var, dominio2)
     else:
         problem.addVariable(var, dominio1)
-
 #cada contenedor en una celda
 problem.addConstraint(AllDifferentConstraint(), dic_valores.keys())
 
@@ -116,8 +115,10 @@ def uno_encima_de_otro(*args):
             if var1 != var2:
                 for m in range(0, M-1):
                     for n in range(0, N):
-                        if matriz_celdas[i+1][j] != 'X' and var_list[var1] == i + j and var_list[var2] != i + j + len(var_list):
+                        if matriz_celdas[m+1][n] != 'X' and var_list[var1] == m*N + n and var_list[var2] != m*N + n + N:
+                            #print('esta no esta debajo')
                             counter_var += 1
+        #print('a'+str(counter_var))
         if counter_var == len(var_list)-1:
             print(False)
             return False
@@ -136,15 +137,14 @@ def puerto1_arriba(*args):
         #print('u' + keys[var1])
         for var2 in range(0, len(var_list)):
             #print('uu' + keys[var2])
-            for var3 in range(0, len(var_list)):
-                #print('uuu' + keys[var3])
-                if var1 != var2 and var1 != var3 and var2 != var3:
-                    #print('var1: ' + str(var1) + ' var2: ' + str(var2) + ' var3: ' + str(var3))
-                    for o in range(0, M):
-                        for p in range(0, N):
-                            if ((var_list[var1] == o + p and dic_valores[keys[var1]][0] == 1) and (var_list[var2] == o + p + len(var_list) and dic_valores[keys[var2]][0] == 2)) and (var_list[var3] == o + p + 2*len(var_list) and dic_valores[keys[var3]][0] != 2):
-                                print('False2')
-                                return False
+            if var1 != var2:
+                #print('var1: ' + str(var1) + ' var2: ' + str(var2) + ' var3: ' + str(var3))
+                for o in range(0, M):
+                    for p in range(0, N):
+                        #print('b'+ str(dic_valores[keys[var1]][0]))
+                        if ((var_list[var1] == o*N + p) and dic_valores[keys[var1]][0] == '2') and ((var_list[var2] == o*N + p + N) and dic_valores[keys[var2]][0] != '2'):
+                            print('False2')
+                            return False
     print('True2')
     return True
 problem.addConstraint(puerto1_arriba, dic_valores.keys())
@@ -167,4 +167,30 @@ def todas_asignadas(*args):
 
 problem.addConstraint(todas_asignadas, dic_valores.keys())
 
-print(problem.getSolution())
+list_solutions = problem.getSolutions()
+print(list_solutions)
+print(dic_valores)
+print(matriz_celdas)
+print(dominio1)
+print(dominio2)
+matriz_posiciones = []
+for i in range(0, M):
+    matriz_posiciones.append([])
+    for j in range(0, N):
+        matriz_posiciones[i].append(i*N + j)
+
+try:
+    with open(PATH + "mapa1-contenedores1.output", "w+", encoding='utf-8', newline="") as file:
+        file.write("Número de soluciones: " + str(len(list_solutions)) + "\n")
+        for times in range(0, len(list_solutions)):
+            dic_solution = {}
+            for var in list_solutions[times].keys():
+                for i in range(0, M):
+                    for j in range(0, N):
+                        if list_solutions[times][var] == matriz_posiciones[i][j]:
+                            dic_solution[var] = (j, i)
+            print(str(dic_solution))
+            file.write(str(dic_solution) + "\n")
+except FileNotFoundError as ex:
+    raise Exception("Wrong file or file path\n") from ex
+file.close()
