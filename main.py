@@ -180,7 +180,7 @@ for i in range(0, M):
         matriz_posiciones[i].append(i*N + j)
 
 try:
-    with open(PATH + "mapa1-contenedores1.output", "w+", encoding='utf-8', newline="") as file:
+    with open(PATH + sys.argv[2] +"-"+sys.argv[3]+".output", "w+", encoding='utf-8', newline="") as file:
         file.write("Número de soluciones: " + str(len(list_solutions)) + "\n")
         for times in range(0, len(list_solutions)):
             dic_solution = {}
