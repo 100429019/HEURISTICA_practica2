@@ -323,6 +323,8 @@ try:
 except FileNotFoundError as ex:
     raise Exception("Wrong file or file path\n") from ex
 
+"""IDEA: matriz_celdas[(pos_en_matriz - N)//N][(pos_en_matriz - N)%N] == '-')"""
+
 diccionario_pos_id = {}
 for i in dominio1:
     diccionario_pos_id[i] = ''
