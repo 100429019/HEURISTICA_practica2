@@ -2,7 +2,7 @@ import queue
 import sys
 
 class Nodo:
-    def __init__(self, pos_barco, diccionario_pos_id, lista_p_init, lista_p_1, lista_p_2, coste_acumulado, parent):
+    def __init__(self, pos_barco, diccionario_pos_id, lista_p_init, lista_p_1, lista_p_2, coste_acumulado, parent, accion):
         self.parent = parent
         self.pos_barco = pos_barco
         self.diccionario_pos_id = diccionario_pos_id
@@ -10,7 +10,8 @@ class Nodo:
         self.lista_p_1 = lista_p_1
         self.lista_p_2 = lista_p_2
         self.coste_acumulado = coste_acumulado
-        self.successors = self.get_sucesores()
+        self.accion = accion
+        #self.successors = self.get_sucesores()
 
     def get_sucesores(self):
         sucesores = []
@@ -31,43 +32,44 @@ class Nodo:
         return sucesores
 
     def _cargar(self, pos_barco, contenedor, pos_en_matriz):
-        if pos_barco == 0 and contenedor in self.lista_p_init and dic_valores[contenedor][1] != 'R':
-            print('uwu')
+        if pos_barco == 0 and contenedor in self.lista_p_init and dic_valores[contenedor][1] != 'R' and contenedor not in self.diccionario_pos_id.values():
             profundidad, valid = self.colocar_en_matriz(pos_en_matriz)
-            if valid:
-                dic_local = self.diccionario_pos_id
-                dic_local[pos_en_matriz] = contenedor
-                lista_p_init_local = self.lista_p_init
-                lista_p_init_local.remove(contenedor)
-                coste_acumulado_local = self.coste_acumulado
-                coste_acumulado_local += (10+profundidad)
-                sucesor = Nodo(pos_barco, dic_local, lista_p_init_local, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self)
-                return tuple([coste_acumulado_local + heuristica(self), sucesor, "cargar("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")"])
-        elif pos_barco == 1 and contenedor in self.lista_p_1 and dic_valores[contenedor][1] != 'R':
-            profundidad, valid = self.colocar_en_matriz(pos_en_matriz)
-            if valid:
-                dic_local = self.diccionario_pos_id
-                dic_local[pos_en_matriz] = contenedor
-                lista_p_1_local = self.lista_p_1
-                lista_p_1_local.remove(contenedor)
-                coste_acumulado_local = self.coste_acumulado
-                coste_acumulado_local += (10 + profundidad)
-                sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, lista_p_1_local, self.lista_p_2, coste_acumulado_local, self)
-                return tuple([coste_acumulado_local + heuristica(self), sucesor, "cargar("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")"])
-
-    def _cargar_refrigerado(self, pos_barco, contenedor, pos_en_matriz):
-        if pos_barco == 0 and contenedor in self.lista_p_init and dic_valores[contenedor][1] == 'R':
-            profundidad, valid = self.colocar_en_matriz_refrig(pos_en_matriz)
             if valid:
                 dic_local = self.diccionario_pos_id
                 dic_local[pos_en_matriz] = contenedor
                 lista_p_init_local = list(self.lista_p_init)
                 lista_p_init_local.remove(contenedor)
                 coste_acumulado_local = self.coste_acumulado
+                coste_acumulado_local += (10+profundidad)
+                sucesor = Nodo(pos_barco, dic_local, lista_p_init_local, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self, "cargar("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")")
+                return tuple([coste_acumulado_local + heuristica(self), sucesor])
+        elif pos_barco == 1 and contenedor in self.lista_p_1 and dic_valores[contenedor][1] != 'R' and contenedor not in self.diccionario_pos_id.values():
+            profundidad, valid = self.colocar_en_matriz(pos_en_matriz)
+            if valid:
+                dic_local = self.diccionario_pos_id
+                dic_local[pos_en_matriz] = contenedor
+                lista_p_1_local = list(self.lista_p_1)
+                lista_p_1_local.remove(contenedor)
+                coste_acumulado_local = self.coste_acumulado
                 coste_acumulado_local += (10 + profundidad)
-                sucesor = Nodo(pos_barco, dic_local, lista_p_init_local, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self)
-                return tuple([coste_acumulado_local + heuristica(self), sucesor, "cargar_refrigerado("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")"])
-        elif pos_barco == 1 and contenedor in self.lista_p_1 and dic_valores[contenedor][1] == 'R':
+                sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, lista_p_1_local, self.lista_p_2, coste_acumulado_local, self, "cargar(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
+                return tuple([coste_acumulado_local + heuristica(self), sucesor])
+
+    def _cargar_refrigerado(self, pos_barco, contenedor, pos_en_matriz):
+        if pos_barco == 0 and contenedor in self.lista_p_init and dic_valores[contenedor][1] == 'R' and contenedor not in self.diccionario_pos_id.values():
+            profundidad, valid = self.colocar_en_matriz_refrig(pos_en_matriz)
+            if valid:
+                #print('aaaaa')
+                dic_local = self.diccionario_pos_id
+                dic_local[pos_en_matriz] = contenedor
+                #print(dic_local[pos_en_matriz])
+                lista_p_init_local = list(self.lista_p_init)
+                lista_p_init_local.remove(contenedor)
+                coste_acumulado_local = self.coste_acumulado
+                coste_acumulado_local += (10 + profundidad)
+                sucesor = Nodo(pos_barco, dic_local, lista_p_init_local, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self, "cargar_refrigerado("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")")
+                return tuple([coste_acumulado_local + heuristica(self), sucesor])
+        elif pos_barco == 1 and contenedor in self.lista_p_1 and dic_valores[contenedor][1] == 'R' and contenedor not in self.diccionario_pos_id.values():
             profundidad, valid = self.colocar_en_matriz_refrig(pos_en_matriz)
             if valid:
                 dic_local = self.diccionario_pos_id
@@ -76,55 +78,64 @@ class Nodo:
                 lista_p_1_local.remove(contenedor)
                 coste_acumulado_local = self.coste_acumulado
                 coste_acumulado_local += (10 + profundidad)
-                sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, lista_p_1_local, self.lista_p_2, coste_acumulado_local, self)
-                return tuple([coste_acumulado_local + heuristica(self), sucesor, "cargar_refrigerado("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")"])
+                sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, lista_p_1_local, self.lista_p_2, coste_acumulado_local, self, "cargar_refrigerado(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
+                return tuple([coste_acumulado_local + heuristica(self), sucesor])
 
     def colocar_en_matriz(self, pos_en_matriz):
-        if (pos_en_matriz) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz] != '' or (pos_en_matriz + N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz + N] == '':
+        if ((pos_en_matriz) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz] != '') or ((pos_en_matriz + N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz + N] == ''):
             return None, False
         return pos_en_matriz // N, True
 
 
     def colocar_en_matriz_refrig(self, pos_en_matriz):
-        if matriz_celdas[pos_en_matriz // N][pos_en_matriz % N] != 'E' or (pos_en_matriz) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz] != '' or (pos_en_matriz + N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz + N] == '':
+        if matriz_celdas[pos_en_matriz // N][pos_en_matriz % N] != 'E' or ((pos_en_matriz) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz] != '') or ((pos_en_matriz + N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz + N] == ''):
             return None, False
         return pos_en_matriz // N, True
 
     def _descargar(self, pos_barco, contenedor, pos_en_matriz):
-        if pos_barco == 0 and self.diccionario_pos_id[pos_en_matriz] == contenedor and (pos_en_matriz // N == 0 or self.diccionario_pos_id[pos_en_matriz - N] == ''):
+        if pos_barco == 0 and contenedor in self.diccionario_pos_id.values() and (pos_en_matriz // N == 0 or ((pos_en_matriz - N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz - N] == '')) and contenedor not in self.lista_p_init:
             dic_local = self.diccionario_pos_id
-            dic_local[pos_en_matriz] = ''
+            for i in dic_local.keys():
+                if dic_local[i] == contenedor:
+                    dic_local[i] = ''
+            #dic_local[pos_en_matriz] = ''
             lista_p_init_local = list(self.lista_p_init)
             lista_p_init_local.append(contenedor)
             coste_acumulado_local = self.coste_acumulado
             coste_acumulado_local += (15 + 2*(pos_en_matriz // N))
-            sucesor = Nodo(pos_barco, dic_local, lista_p_init_local, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self)
-            return tuple([coste_acumulado_local + heuristica(self), sucesor, "descargar("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")"])
-        elif pos_barco == 1 and self.diccionario_pos_id[pos_en_matriz] == contenedor and (pos_en_matriz // N == 0 or self.diccionario_pos_id[pos_en_matriz - N] == ''):
+            sucesor = Nodo(pos_barco, dic_local, lista_p_init_local, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self, "descargar(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
+            return tuple([coste_acumulado_local + heuristica(self), sucesor])
+        elif pos_barco == 1 and contenedor in self.diccionario_pos_id.values() and (pos_en_matriz // N == 0 or ((pos_en_matriz - N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz - N] == '')) and contenedor not in self.lista_p_1:
             dic_local = self.diccionario_pos_id
-            dic_local[pos_en_matriz] = ''
+            for i in dic_local.keys():
+                if dic_local[i] == contenedor:
+                    dic_local[i] = ''
+            # dic_local[pos_en_matriz] = ''
             lista_p_1_local = list(self.lista_p_1)
             lista_p_1_local.append(contenedor)
             coste_acumulado_local = self.coste_acumulado
             coste_acumulado_local += (15 + 2 * (pos_en_matriz // N))
-            sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, lista_p_1_local, self.lista_p_2, coste_acumulado_local, self)
-            return tuple([coste_acumulado_local + heuristica(self), sucesor, "descargar("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")"])
-        elif pos_barco == 2 and self.diccionario_pos_id[pos_en_matriz] == contenedor and (pos_en_matriz // N == 0 or self.diccionario_pos_id[pos_en_matriz - N] == ''):
+            sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, lista_p_1_local, self.lista_p_2, coste_acumulado_local, self, "descargar(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
+            return tuple([coste_acumulado_local + heuristica(self), sucesor])
+        elif pos_barco == 2 and contenedor in self.diccionario_pos_id.values() and (pos_en_matriz // N == 0 or ((pos_en_matriz - N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz - N] == '')) and contenedor not in self.lista_p_2:
             dic_local = self.diccionario_pos_id
-            dic_local[pos_en_matriz] = ''
+            for i in dic_local.keys():
+                if dic_local[i] == contenedor:
+                    dic_local[i] = ''
+            # dic_local[pos_en_matriz] = ''
             lista_p_2_local = list(self.lista_p_2)
             lista_p_2_local.append(contenedor)
             coste_acumulado_local = self.coste_acumulado
             coste_acumulado_local += (15 + 2 * (pos_en_matriz // N))
-            sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, self.lista_p_1, lista_p_2_local, coste_acumulado_local, self)
-            return tuple([coste_acumulado_local + heuristica(self), sucesor, "descargar("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")"])
+            sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, self.lista_p_1, lista_p_2_local, coste_acumulado_local, self, "descargar(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
+            return tuple([coste_acumulado_local + heuristica(self), sucesor])
 
     def _navegar(self, pos_barco):
         if pos_barco == 0 or pos_barco == 1:
             coste_acumulado_local = self.coste_acumulado
             coste_acumulado_local += 3500
-            sucesor = Nodo(pos_barco+1, self.diccionario_pos_id, self.lista_p_init, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self)
-            return tuple([coste_acumulado_local + heuristica(self), sucesor, "navegar("+str(pos_barco)+")"])
+            sucesor = Nodo(pos_barco+1, self.diccionario_pos_id, self.lista_p_init, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self, "navegar("+str(pos_barco)+")")
+            return tuple([coste_acumulado_local + heuristica(self), sucesor])
 
     def __lt__(self, other):
         if self.coste_acumulado < other.coste_acumulado:
@@ -139,7 +150,7 @@ class Aestrella:
         self.nodos_expandidos = 0
 
     def solve(self):
-        while not self.abierta.empty() or not self.exito:
+        while not self.abierta.empty() and not self.exito:
             primer_nodo_abierta = self.abierta.get()
             while primer_nodo_abierta in self.cerrada:
                 primer_nodo_abierta = self.abierta.get()
@@ -148,16 +159,20 @@ class Aestrella:
                 self.exito = True
             else:
                 self.cerrada.append(primer_nodo_abierta)
+                successors = primer_nodo_abierta[1].get_sucesores()
+                #print(successors)
                 self.nodos_expandidos += 1
-                for s in primer_nodo_abierta[1].successors:
+                #print(self.nodos_expandidos)
+                for s in successors:
                     self.abierta.put(s)
 
         solucion = []
         if self.exito:
-            nodo = primer_nodo_abierta
-            solucion.append(nodo)
+            nodo = primer_nodo_abierta[1]
+            solucion.append(nodo.accion)
             while nodo.parent is not None:
-                solucion.append(nodo.parent)
+                solucion.append(nodo.accion)
+                nodo = nodo.parent
 
         return solucion
 
@@ -168,15 +183,19 @@ def heuristica(nodo):
 
 
 def is_final(nodo):
-    if nodo.pos_barco != 2 or len(nodo.lista_p_init) > 0:
+    if (nodo.pos_barco == 0) or len(nodo.lista_p_init) > 0:
+        #print(nodo.lista_p_init)
         return False
     for i in nodo.diccionario_pos_id.values():
         if i != '':
+            #print('b')
             return False
     for contenedor in dic_valores.keys():
-        if (dic_valores[contenedor][0] == '1' and i not in nodo.lista_p_1) or (dic_valores[contenedor][0] == '2' and i not in nodo.lista_p_2):
+        if (dic_valores[contenedor][0] == '1' and contenedor not in nodo.lista_p_1) or (dic_valores[contenedor][0] == '2' and contenedor not in nodo.lista_p_2):
+            #print('c')
             return False
-
+    #print(nodo.lista_p_1)
+    # print(nodo.lista_p_2)
     return True
 
 
@@ -260,10 +279,8 @@ except FileNotFoundError as ex:
 diccionario_pos_id = {}
 for i in dominio1:
     diccionario_pos_id[i] = ''
-
-nodo_init = Nodo(0, diccionario_pos_id, dic_valores.keys(), [], [], 0, None)
+nodo_init = Nodo(0, diccionario_pos_id, list(dic_valores.keys()), [], [], 0, None, "")
 tupla_nodo_init = tuple([heuristica(nodo_init), nodo_init])
 
 aestrella = Aestrella(tupla_nodo_init)
 print(aestrella.solve())
-
