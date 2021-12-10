@@ -1,5 +1,6 @@
 import queue
 import sys
+import time
 
 class Nodo:
     def __init__(self, pos_barco, diccionario_pos_id, lista_p_init, lista_p_1, lista_p_2, coste_acumulado, parent, accion):
@@ -99,18 +100,6 @@ class Nodo:
         return pos_en_matriz // N, True
 
     def _descargar(self, pos_barco, contenedor, pos_en_matriz):
-        """if pos_barco == 0 and contenedor in self.diccionario_pos_id.values() and (pos_en_matriz // N == 0 or ((pos_en_matriz - N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz - N] == '')) and contenedor not in self.lista_p_init:
-            dic_local = self.diccionario_pos_id
-            for i in dic_local.keys():
-                if dic_local[i] == contenedor:
-                    dic_local[i] = ''
-            #dic_local[pos_en_matriz] = ''
-            lista_p_init_local = list(self.lista_p_init)
-            lista_p_init_local.append(contenedor)
-            coste_acumulado_local = self.coste_acumulado
-            coste_acumulado_local += (15 + 2*(pos_en_matriz // N))
-            sucesor = Nodo(pos_barco, dic_local, lista_p_init_local, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self, "descargar(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
-            return tuple([coste_acumulado_local + heuristica(self), sucesor])"""
         #print(pos_barco == 1 and contenedor in list(self.diccionario_pos_id.values()) and (pos_en_matriz // N == 0 or ((pos_en_matriz - N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz - N] == '')) and contenedor not in self.lista_p_1)
         #print(str(contenedor not in self.lista_p_1) +" "+str(contenedor))
         #print(self.lista_p_1)
@@ -228,6 +217,9 @@ class Aestrella:
 def heuristica(nodo):
     if HEURISTICA == 'heuristica1':
         return len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))
+    elif HEURISTICA == 'heuristica2':
+        #25 porque 10 + 15 es la suma de los costes fijos de cargar y descargar
+        return (len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))) * (25)
 
 
 def is_final(nodo):
@@ -329,8 +321,30 @@ except FileNotFoundError as ex:
 diccionario_pos_id = {}
 for i in dominio1:
     diccionario_pos_id[i] = ''
+
+t1 = time.time()
+
 nodo_init = Nodo(0, diccionario_pos_id, list(dic_valores.keys()), [], [], 0, None, "")
 tupla_nodo_init = tuple([heuristica(nodo_init), nodo_init])
 
 aestrella = Aestrella(tupla_nodo_init)
-print(aestrella.solve())
+solucion = aestrella.solve()
+
+t2 = time.time()
+tiempo_total = t2 - t1
+try:
+    with open(PATH + sys.argv[2] +"-"+sys.argv[3]+"-"+sys.argv[4]+".output", "w+", encoding='utf-8', newline="") as file:
+        for acciones in range(1, len(solucion[0])+1):
+            file.write(solucion[0][(-1) * acciones] + "\n")
+except FileNotFoundError as ex:
+    raise Exception("Wrong file or file path\n") from ex
+file.close()
+try:
+    with open(PATH + sys.argv[2] +"-"+sys.argv[3]+"-"+sys.argv[4]+".stat", "w+", encoding='utf-8', newline="") as file:
+        file.write("Tiempo total: " + str(tiempo_total) + "\n")
+        file.write("Coste total: " + str(solucion[2]) + "\n")
+        file.write("Longitud del plan: " + str(len(solucion[0])) + "\n")
+        file.write("Nodos expandidos: " + str(solucion[1]) + "\n")
+except FileNotFoundError as ex:
+    raise Exception("Wrong file or file path\n") from ex
+file.close()

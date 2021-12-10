@@ -1,0 +1,8 @@
+cargar(0,3,3)
+cargar_refrigerado(0,2,1)
+cargar_refrigerado(0,1,2)
+navegar(0)
+descargar(1,2,1)
+descargar(1,1,2)
+navegar(1)
+descargar(2,3,3)
