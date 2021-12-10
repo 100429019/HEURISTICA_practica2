@@ -106,9 +106,7 @@ class Nodo:
         if pos_barco == 1 and self.diccionario_pos_id[pos_en_matriz] == contenedor and contenedor in list(self.diccionario_pos_id.values()) and (pos_en_matriz // N == 0 or ((pos_en_matriz - N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz - N] == '')) and contenedor not in self.lista_p_1:
             dic_local = self.diccionario_pos_id.copy()
             #print(str(dic_local)+' en '+str(pos_barco))
-            for i in dic_local.keys():
-                if dic_local[i] == contenedor:
-                    dic_local[i] = ''
+            dic_local[pos_en_matriz] = ''
             #print(dic_local)
             # dic_local[pos_en_matriz] = ''
             lista_p_1_local = list(self.lista_p_1)
@@ -121,10 +119,7 @@ class Nodo:
             return tuple([coste_acumulado_local + heuristica(self), sucesor])
         elif pos_barco == 2 and self.diccionario_pos_id[pos_en_matriz] == contenedor and contenedor in self.diccionario_pos_id.values() and (pos_en_matriz // N == 0 or ((pos_en_matriz - N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz - N] == '')) and contenedor not in self.lista_p_2:
             dic_local = self.diccionario_pos_id.copy()
-            for i in dic_local.keys():
-                if dic_local[i] == contenedor:
-                    #posicion = i
-                    dic_local[i] = ''
+            dic_local[pos_en_matriz] = ''
             # dic_local[pos_en_matriz] = ''
             lista_p_2_local = list(self.lista_p_2)
             lista_p_2_local.append(contenedor)
