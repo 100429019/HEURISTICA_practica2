@@ -130,10 +130,11 @@ class Nodo:
             coste_acumulado_local += (15 + 2 * (pos_en_matriz // N))
             sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, lista_p_1_local, self.lista_p_2, coste_acumulado_local, self, "descargar(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
             return tuple([coste_acumulado_local + heuristica(self), sucesor])
-        elif pos_barco == 2 and contenedor in self.diccionario_pos_id.values() and (pos_en_matriz // N == 0 or ((pos_en_matriz - N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz - N] == '')) and contenedor not in self.lista_p_2:
+        elif pos_barco == 2 and self.diccionario_pos_id[pos_en_matriz] == contenedor and contenedor in self.diccionario_pos_id.values() and (pos_en_matriz // N == 0 or ((pos_en_matriz - N) in list(self.diccionario_pos_id.keys()) and self.diccionario_pos_id[pos_en_matriz - N] == '')) and contenedor not in self.lista_p_2:
             dic_local = self.diccionario_pos_id.copy()
             for i in dic_local.keys():
                 if dic_local[i] == contenedor:
+                    #posicion = i
                     dic_local[i] = ''
             # dic_local[pos_en_matriz] = ''
             lista_p_2_local = list(self.lista_p_2)
@@ -221,7 +222,7 @@ class Aestrella:
                 print(nodo.coste_acumulado)
                 nodo = nodo.parent
 
-        return solucion
+        return solucion, self.nodos_expandidos, primer_nodo_abierta[1].coste_acumulado
 
 
 def heuristica(nodo):
