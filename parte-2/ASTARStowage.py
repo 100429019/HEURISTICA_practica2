@@ -237,7 +237,8 @@ class Nodo:
     def __lt__(self, other):
         """ Este metodo nos permite elegir que nodo es menor a otro. Se tendra en cuenta unicamente el coste acumulado"""
         if self.coste_acumulado < other.coste_acumulado:
-            return self
+            return True
+        return False
 
     def __eq__(self, other):
         """ Este metodo se utiliza para poder comparar instancias de Nodo.

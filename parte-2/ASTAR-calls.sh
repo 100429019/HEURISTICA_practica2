@@ -7,4 +7,4 @@
 ./ASTARStowage.sh ./ASTAR-tests mapa6 contenedores4 heuristica1
 ./ASTARStowage.sh ./ASTAR-tests mapa7 contenedores3 heuristica1
 ./ASTARStowage.sh ./ASTAR-tests mapa7 contenedores3 heuristica2
-./ASTARStowage.sh ./ASTAR-tests mapa5 contenedores3 heuristica1
+./ASTARStowage.sh ./ASTAR-tests mapa5 contenedores3 heuristica2
