@@ -314,11 +314,16 @@ def heuristica(nodo):
     Dependiendo de que heuristica se eligiera en los argumentos se usara una o la otra:
     -La primera heuristica solo tiene en cuenta los contenedores que no estan en sus puertos de destino
     -La segunda heuristica ademas de los contenedores que faltan por llegar a su destino tiene en cuenta sus
-    costes fijos de carga y descarga"""
+    costes fijos de carga, descarga y navegacion dependiendo del puerto en el que se encuentre el barco"""
     if HEURISTICA == 'heuristica1':
         return len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))
     elif HEURISTICA == 'heuristica2':
-        return (len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))) * (25)
+        if nodo.pos_barco == 0:
+            return 7000 + (len(dic_valores.keys())) * (25)
+        elif nodo.pos_barco == 1:
+            return 3500 + (len(dic_valores.keys()) - len(nodo.lista_p_1)) * (25)
+        elif nodo.pos_barco == 2:
+            return (len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))) * (15)
 
 
 def is_final(nodo):
