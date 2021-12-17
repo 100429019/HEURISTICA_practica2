@@ -275,10 +275,10 @@ class Aestrella:
     def solve(self):
         """ Este metodo incluye la implementacion del algoritmo de A* para la resolucion de problemas de busqueda"""
         # Hasta que la cola abierta este vacia o el atributo exito sea verdadero se ejecuta el bucle
-        while not self.abierta.empty() and not self.exito:
+        while self.abierta.qsize() != 0 and not self.exito:
             # Se van cogiendo nodos de la cola abierta hasta encontrar uno que no este en la lista cerrada
             primer_nodo_abierta = self.abierta.get()
-            while primer_nodo_abierta in self.cerrada:
+            while primer_nodo_abierta[1] in self.cerrada:
                 primer_nodo_abierta = self.abierta.get()
 
             # Si el nodo corresponde al estado final entonces la variable exito pasa a ser verdadera
@@ -286,7 +286,7 @@ class Aestrella:
                 self.exito = True
             else:
                 # Si no se expande el nodo y se mete en cerrada, generando el conjunto de sus sucesores
-                self.cerrada.append(primer_nodo_abierta)
+                self.cerrada.append(primer_nodo_abierta[1])
                 successors = primer_nodo_abierta[1].get_sucesores()
                 # Se incrementa el contador de nodos expandidos
                 self.nodos_expandidos += 1
@@ -314,23 +314,11 @@ def heuristica(nodo):
     Dependiendo de que heuristica se eligiera en los argumentos se usara una o la otra:
     -La primera heuristica solo tiene en cuenta los contenedores que no estan en sus puertos de destino
     -La segunda heuristica ademas de los contenedores que faltan por llegar a su destino tiene en cuenta sus
-    costes fijos de carga, descarga y navegacion dependiendo del puerto en el que se encuentre el barco"""
+    costes fijos de carga y descarga"""
     if HEURISTICA == 'heuristica1':
         return len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))
     elif HEURISTICA == 'heuristica2':
-        if navegar_puerto2:
-            if nodo.pos_barco == 0:
-                return 7000 + (len(dic_valores.keys())) * (25)
-            elif nodo.pos_barco == 1:
-                return 3500 + (len(dic_valores.keys()) - len(nodo.lista_p_1)) * (25)
-            elif nodo.pos_barco == 2:
-                return (len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))) * (15)
-        else:
-            if nodo.pos_barco == 0:
-                return 3500 + (len(dic_valores.keys())) * (25)
-            elif nodo.pos_barco == 1:
-                return (len(dic_valores.keys()) - len(nodo.lista_p_1)) * (15)
-
+        return (len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))) * (15)
 
 def is_final(nodo):
     """ Esta funcion nos permite decidir si un estado es el estado final.
