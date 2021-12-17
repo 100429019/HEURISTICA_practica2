@@ -318,12 +318,18 @@ def heuristica(nodo):
     if HEURISTICA == 'heuristica1':
         return len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))
     elif HEURISTICA == 'heuristica2':
-        if nodo.pos_barco == 0:
-            return 7000 + (len(dic_valores.keys())) * (25)
-        elif nodo.pos_barco == 1:
-            return 3500 + (len(dic_valores.keys()) - len(nodo.lista_p_1)) * (25)
-        elif nodo.pos_barco == 2:
-            return (len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))) * (15)
+        if navegar_puerto2:
+            if nodo.pos_barco == 0:
+                return 7000 + (len(dic_valores.keys())) * (25)
+            elif nodo.pos_barco == 1:
+                return 3500 + (len(dic_valores.keys()) - len(nodo.lista_p_1)) * (25)
+            elif nodo.pos_barco == 2:
+                return (len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))) * (15)
+        else:
+            if nodo.pos_barco == 0:
+                return 3500 + (len(dic_valores.keys())) * (25)
+            elif nodo.pos_barco == 1:
+                return (len(dic_valores.keys()) - len(nodo.lista_p_1)) * (15)
 
 
 def is_final(nodo):
@@ -429,6 +435,8 @@ except FileNotFoundError as ex:
 
 # Declaramos el diccionario donde se relacionaran los contenedores con sus datos: puerto destino y tipo de contenedor
 dic_valores = {}
+# Declaramos una variable booleana que nos indica si hay contenedores que vayan al puerto 2
+navegar_puerto2 = False
 try:
     # Abrimos el archivo de contenedores
     with open(CONTENEDORES, "r+", encoding='utf-8', newline="") as file:
@@ -440,6 +448,8 @@ try:
                 i += 1
             # Por cada linea incluimos una entrada al diccionario con key igual al id del contenedor
             # y valor asociado una lista con el puerto destino y el tipo de contenedor
+            if not navegar_puerto2 and str(line[i + 3]) == '2':
+                navegar_puerto2 = True
             dic_valores[str(buf1)] = [str(line[i + 3]), str(line[i + 1])]
 
 except FileNotFoundError as ex:
