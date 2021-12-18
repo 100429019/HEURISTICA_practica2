@@ -476,7 +476,7 @@ try:
         # Por cada accion en la lista devuelta en la primera posicion de la tupla de solucion
         # escribimos en el archivo de salida cada accion en una linea
         for acciones in range(1, len(solucion[0])+1):
-            file.write(solucion[0][(-1) * acciones] + "\n")
+            file.write(str(acciones) + '. ' + solucion[0][(-1) * acciones] + "\n")
 
 except FileNotFoundError as ex:
     # En caso de no poder abrir el archivo del mapa saltará una excepcion
