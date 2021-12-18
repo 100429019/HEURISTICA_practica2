@@ -318,7 +318,18 @@ def heuristica(nodo):
     if HEURISTICA == 'heuristica1':
         return len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))
     elif HEURISTICA == 'heuristica2':
-        return (len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))) * (15)
+        if navegar_puerto2:
+            if nodo.pos_barco == 0:
+                return 7000 + (len(dic_valores.keys())) * (15)
+            elif nodo.pos_barco == 1:
+                return 3500 + (len(dic_valores.keys()) - len(nodo.lista_p_1)) * (15)
+            elif nodo.pos_barco == 2:
+                return (len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))) * (15)
+        else:
+            if nodo.pos_barco == 0:
+                return 3500 + (len(dic_valores.keys())) * (15)
+            elif nodo.pos_barco == 1:
+                return (len(dic_valores.keys()) - len(nodo.lista_p_1)) * (15)
 
 def is_final(nodo):
     """ Esta funcion nos permite decidir si un estado es el estado final.
