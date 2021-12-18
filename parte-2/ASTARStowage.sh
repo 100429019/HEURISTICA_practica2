@@ -1,3 +1,3 @@
-#! /bin/bash
+#! /bin/sh
 
-python ASTARStowage.py $1 $2 $3 $4
+python3 ASTARStowage.py $1 $2 $3 $4

@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from constraint import *
 import sys
 
@@ -12,25 +15,21 @@ counter_i = 0
 counter_j = 0
 M = 0
 N = 0
-try:
-    # Abrimos el archivo del mapa
-    with open(MAPA, "r+", encoding='utf-8', newline="") as file:
-        # Iteramos por cada linea y por cada caracter dentro de cada linea
-        for line in file:
-            counter_j = 0
-            for character in line:
-                # Solo incrementamos el contador de columnas si se trata de un caracter valido para el problema
-                if character != ' ' and character != '\r' and character != '\n':
-                    counter_j += 1
-            # Si una fila tiene mas caracteres que otra actualizamos el numero total de columnas
-            if counter_j > N:
-                N = counter_j
-            counter_i += 1
-        # Pasamos el valor del numero total de filas a la variable M
-        M = counter_i
-except FileNotFoundError as ex:
-    # En caso de no poder abrir el archivo del mapa saltará una excepcion
-    raise Exception("Wrong file or file path\n") from ex
+# Abrimos el archivo del mapa
+with open(MAPA, "r+") as file:
+    # Iteramos por cada linea y por cada caracter dentro de cada linea
+    for line in file:
+        counter_j = 0
+        for character in line:
+            # Solo incrementamos el contador de columnas si se trata de un caracter valido para el problema
+            if character != ' ' and character != '\r' and character != '\n':
+                counter_j += 1
+        # Si una fila tiene mas caracteres que otra actualizamos el numero total de columnas
+        if counter_j > N:
+            N = counter_j
+        counter_i += 1
+    # Pasamos el valor del numero total de filas a la variable M
+    M = counter_i
 
 # Declaramos las listas que seran los dominios y se rellenaran mas tarde
 dominio1 = []
@@ -40,66 +39,56 @@ dominio2 = []
 i = 0
 counter = 0
 matriz_celdas = []
-try:
-    # Abrimos el archivo del mapa
-    with open(MAPA, "r+", encoding='utf-8', newline="") as file:
-        # Iteramos por cada linea y cada caracter de cada linea
-        for line in file:
-            # Por cada fila en el archivo ponemos una lista mas en la lista de listas (matriz)
-            matriz_celdas.append([])
-            # Inicializamos la variable prev_character que nos indicara el valor del caracter anterior
-            # La utilizaremos para poder rellenar la matriz con 'X'
-            # en las celdas en las que el mapa input no haya definido ningun valor
-            prev_character = 'X'
-            j = 0
-            for character in line:
-                if (prev_character == ' ' or character != ' ' or (j == 0 and character == ' ' [0] == character)) and character != '\r' and character != '\n':
-                    # Si el primer caracter es un espacio rellenamos el hueco con una 'X'
-                    if character == ' ':
-                        matriz_celdas[i].append('X')
-                    else:
-                        # Si el caracter no es un espacio se incuira en la matriz el elemento del mapa
-                        matriz_celdas[i].append(character)
-                    prev_character = 'X'
-                    # Si el caracter no es una 'X' ni un espacio incluimos esa posicion en el dominio1
-                    # Y si ademas la celda es de Energia se guarda la posicion en el dominio2
-                    if character != 'X' and character != ' ':
-                        dominio1.append(counter)
-                        if character == 'E':
-                            dominio2.append(counter)
-                    counter += 1
-                # Si el caracter actual es un espacio actualizamos la variable prev_character
-                # para la siguiente iteracion
+# Abrimos el archivo del mapa
+with open(MAPA, "r+") as file:
+    # Iteramos por cada linea y cada caracter de cada linea
+    for line in file:
+        # Por cada fila en el archivo ponemos una lista mas en la lista de listas (matriz)
+        matriz_celdas.append([])
+        # Inicializamos la variable prev_character que nos indicara el valor del caracter anterior
+        # La utilizaremos para poder rellenar la matriz con 'X'
+        # en las celdas en las que el mapa input no haya definido ningun valor
+        prev_character = 'X'
+        j = 0
+        for character in line:
+            if (prev_character == ' ' or character != ' ' or (j == 0 and character == ' ' [0] == character)) and character != '\r' and character != '\n':
+                # Si el primer caracter es un espacio rellenamos el hueco con una 'X'
                 if character == ' ':
-                    prev_character = ' '
-                j += 1
-            # Rellenamos la fila con 'X' si no habia tantos caracteres como el numero total de columnas
-            if len(matriz_celdas[i]) < N:
-                matriz_celdas[i].append('X')
-            i += 1
-
-except FileNotFoundError as ex:
-    # En caso de no poder abrir el archivo del mapa saltará una excepcion
-    raise Exception("Wrong file or file path\n") from ex
+                    matriz_celdas[i].append('X')
+                else:
+                    # Si el caracter no es un espacio se incuira en la matriz el elemento del mapa
+                    matriz_celdas[i].append(character)
+                prev_character = 'X'
+                # Si el caracter no es una 'X' ni un espacio incluimos esa posicion en el dominio1
+                # Y si ademas la celda es de Energia se guarda la posicion en el dominio2
+                if character != 'X' and character != ' ':
+                    dominio1.append(counter)
+                    if character == 'E':
+                        dominio2.append(counter)
+                counter += 1
+            # Si el caracter actual es un espacio actualizamos la variable prev_character
+            # para la siguiente iteracion
+            if character == ' ':
+                prev_character = ' '
+            j += 1
+        # Rellenamos la fila con 'X' si no habia tantos caracteres como el numero total de columnas
+        if len(matriz_celdas[i]) < N:
+            matriz_celdas[i].append('X')
+        i += 1
 
 # Declaramos el diccionario donde se relacionaran los contenedores con sus datos: puerto destino y tipo de contenedor
 dic_valores = {}
-try:
-    # Abrimos el archivo de contenedores
-    with open(CONTENEDORES, "r+", encoding='utf-8', newline="") as file:
-        for line in file:
-            i = 0
-            buf1 = ''
-            while line[i] != ' ':
-                buf1 += line[i]
-                i += 1
-            # Por cada linea incluimos una entrada al diccionario con key igual al id del contenedor
-            # y valor asociado una lista con el puerto destino y el tipo de contenedor
-            dic_valores[str(buf1)] = [str(line[i + 3]), str(line[i + 1])]
-
-except FileNotFoundError as ex:
-    # En caso de no poder abrir el archivo del mapa saltará una excepcion
-    raise Exception("Wrong file or file path\n") from ex
+# Abrimos el archivo de contenedores
+with open(CONTENEDORES, "r+") as file:
+    for line in file:
+        i = 0
+        buf1 = ''
+        while line[i] != ' ':
+            buf1 += line[i]
+            i += 1
+        # Por cada linea incluimos una entrada al diccionario con key igual al id del contenedor
+        # y valor asociado una lista con el puerto destino y el tipo de contenedor
+        dic_valores[str(buf1)] = [str(line[i + 3]), str(line[i + 1])]
 
 # Inicializamos el problema de python constraint
 problem = Problem()
@@ -212,26 +201,22 @@ for i in range(0, M):
     for j in range(0, N):
         matriz_posiciones[i].append(i * N + j)
 
-try:
-    # Abrimos o creamos un archivo de salida donde incluiremos las soluciones del problema
-    with open(PATH + sys.argv[2] + "-" + sys.argv[3] + ".output", "w+", encoding='utf-8', newline="") as file:
-        # En la primera linea del archivo escribimos el numero total de soluciones
-        file.write("Número de soluciones: " + str(len(list_solutions)) + "\n")
-        # Para cada solucion formamos un diccionario con las soluciones de tal forma que para cada id de contenedor
-        # quede asociado una tupla con su posicion en la matriz de la forma (pila, profundidad).
-        # Para hacer esto comparamos los valores de posiciones numericas de la solucion con los valores de i y j en la
-        # matriz de posiciones numericas creada antes
-        for times in range(0, len(list_solutions)):
-            dic_solution = {}
-            for var in list_solutions[times].keys():
-                for i in range(0, M):
-                    for j in range(0, N):
-                        if list_solutions[times][var] == matriz_posiciones[i][j]:
-                            dic_solution[var] = (j, i)
-            # Se escribe el diccionario de la solucion con la forma (pila, profundidad) para cada id de contenedor
-            file.write(str(dic_solution) + "\n")
-except FileNotFoundError as ex:
-    # En caso de no poder abrir el archivo del mapa saltará una excepcion
-    raise Exception("Wrong file or file path\n") from ex
+# Abrimos o creamos un archivo de salida donde incluiremos las soluciones del problema
+with open(PATH + sys.argv[2] + "-" + sys.argv[3] + ".output", "w+") as file:
+    # En la primera linea del archivo escribimos el numero total de soluciones
+    file.write("Número de soluciones: " + str(len(list_solutions)) + "\n")
+    # Para cada solucion formamos un diccionario con las soluciones de tal forma que para cada id de contenedor
+    # quede asociado una tupla con su posicion en la matriz de la forma (pila, profundidad).
+    # Para hacer esto comparamos los valores de posiciones numericas de la solucion con los valores de i y j en la
+    # matriz de posiciones numericas creada antes
+    for times in range(0, len(list_solutions)):
+        dic_solution = {}
+        for var in list_solutions[times].keys():
+            for i in range(0, M):
+                for j in range(0, N):
+                    if list_solutions[times][var] == matriz_posiciones[i][j]:
+                        dic_solution[var] = (j, i)
+        # Se escribe el diccionario de la solucion con la forma (pila, profundidad) para cada id de contenedor
+        file.write(str(dic_solution) + "\n")
 # Cerramos el archivo
 file.close()

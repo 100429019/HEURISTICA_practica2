@@ -381,7 +381,7 @@ try:
         M = counter_i
 except FileNotFoundError as ex:
     # En caso de no poder abrir el archivo del mapa saltará una excepcion
-    raise Exception("Wrong file or file path\n") from ex
+    raise Exception("Wrong file or file path\n")
 
 # Declaramos las listas que seran los dominios y se rellenaran mas tarde
 dominio1 = []
@@ -430,7 +430,7 @@ try:
 
 except FileNotFoundError as ex:
     # En caso de no poder abrir el archivo del mapa saltará una excepcion
-    raise Exception("Wrong file or file path\n") from ex
+    raise Exception("Wrong file or file path\n")
 
 # Declaramos el diccionario donde se relacionaran los contenedores con sus datos: puerto destino y tipo de contenedor
 dic_valores = {}
@@ -453,7 +453,7 @@ try:
 
 except FileNotFoundError as ex:
     # En caso de no poder abrir el archivo del mapa saltará una excepcion
-    raise Exception("Wrong file or file path\n") from ex
+    raise Exception("Wrong file or file path\n")
 
 # Creamos un diccionario que relaciona cada posicion valida en la matriz con el contenedor que la está ocupando
 # En caso de ser '' el valor, significara que esa posicion esta vacia
@@ -491,7 +491,7 @@ try:
 
 except FileNotFoundError as ex:
     # En caso de no poder abrir el archivo del mapa saltará una excepcion
-    raise Exception("Wrong file or file path\n") from ex
+    raise Exception("Wrong file or file path\n")
 # Cerramos el archivo
 file.close()
 try:
@@ -508,6 +508,6 @@ try:
 
 except FileNotFoundError as ex:
     # En caso de no poder abrir el archivo del mapa saltará una excepcion
-    raise Exception("Wrong file or file path\n") from ex
+    raise Exception("Wrong file or file path\n")
 # Cerramos el archivo
 file.close()
