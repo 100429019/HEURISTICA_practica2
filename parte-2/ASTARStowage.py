@@ -75,7 +75,7 @@ class Nodo:
                 sucesor = Nodo(pos_barco, dic_local, lista_p_init_local, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self, "cargar("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")")
                 # Devolvemos una tupla de la forma (f(x), sucesor),
                 # donde f(x) es la suma del coste acumulado y la heuristica
-                return tuple([coste_acumulado_local + heuristica(self), sucesor])
+                return tuple([coste_acumulado_local + heuristica(sucesor), sucesor])
         # Si el barco se encuentra en el puerto 1, el contenedor a cargar esta en ese puerto
         # y no es refrigerado ni esta en el barco, se cumplen las precondiciones, si no devolvera None
         elif pos_barco == 1 and contenedor in self.lista_p_1 and dic_valores[contenedor][1] != 'R' and contenedor not in self.diccionario_pos_id.values() and dic_valores[contenedor][0] == '2':
@@ -96,7 +96,7 @@ class Nodo:
                 sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, lista_p_1_local, self.lista_p_2, coste_acumulado_local, self, "cargar(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
                 # Devolvemos una tupla de la forma (f(x), sucesor),
                 # donde f(x) es la suma del coste acumulado y la heuristica
-                return tuple([coste_acumulado_local + heuristica(self), sucesor])
+                return tuple([coste_acumulado_local + heuristica(sucesor), sucesor])
 
     def _cargar_refrigerado(self, pos_barco, contenedor, pos_en_matriz):
         """ Este operador simula la carga de un contenedor refrigerado en el barco"""
@@ -120,7 +120,7 @@ class Nodo:
                 sucesor = Nodo(pos_barco, dic_local, lista_p_init_local, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self, "cargar_refrigerado("+str(pos_barco)+","+str(contenedor)+","+str(pos_en_matriz)+")")
                 # Devolvemos una tupla de la forma (f(x), sucesor),
                 # donde f(x) es la suma del coste acumulado y la heuristica
-                return tuple([coste_acumulado_local + heuristica(self), sucesor])
+                return tuple([coste_acumulado_local + heuristica(sucesor), sucesor])
         # Si el barco se encuentra en el puerto 1, el contenedor a cargar esta en ese puerto, es refrigerado
         # y no esta en el barco, se cumplen las precondiciones, si no devolvera None
         elif pos_barco == 1 and contenedor in self.lista_p_1 and dic_valores[contenedor][1] == 'R' and contenedor not in self.diccionario_pos_id.values() and dic_valores[contenedor][0] == '2':
@@ -141,7 +141,7 @@ class Nodo:
                 sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, lista_p_1_local, self.lista_p_2, coste_acumulado_local, self, "cargar_refrigerado(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
                 # Devolvemos una tupla de la forma (f(x), sucesor),
                 # donde f(x) es la suma del coste acumulado y la heuristica
-                return tuple([coste_acumulado_local + heuristica(self), sucesor])
+                return tuple([coste_acumulado_local + heuristica(sucesor), sucesor])
 
     def colocar_en_matriz(self, pos_en_matriz):
         """ Metodo auxiliar de cargar que nos permite verificar que la posicion en la que se quiere cargar el contenedor
@@ -179,7 +179,7 @@ class Nodo:
             sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, lista_p_1_local, self.lista_p_2, coste_acumulado_local, self, "descargar(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
             # Devolvemos una tupla de la forma (f(x), sucesor),
             # donde f(x) es la suma del coste acumulado y la heuristica
-            return tuple([coste_acumulado_local + heuristica(self), sucesor])
+            return tuple([coste_acumulado_local + heuristica(sucesor), sucesor])
         # Si el barco se encuentra en el puerto 2, el contenedor a descargar esta en la posicion del barco indicada
         # y no tiene ningun contenedor encima o esta en el top del stack y no esta en el puerto 1,
         # se cumplen las precondiciones, si no devolvera None
@@ -198,7 +198,7 @@ class Nodo:
             sucesor = Nodo(pos_barco, dic_local, self.lista_p_init, self.lista_p_1, lista_p_2_local, coste_acumulado_local, self, "descargar(" + str(pos_barco) + "," + str(contenedor) + "," + str(pos_en_matriz) + ")")
             # Devolvemos una tupla de la forma (f(x), sucesor),
             # donde f(x) es la suma del coste acumulado y la heuristica
-            return tuple([coste_acumulado_local + heuristica(self), sucesor])
+            return tuple([coste_acumulado_local + heuristica(sucesor), sucesor])
 
     def _navegar(self, pos_barco):
         """ Este operador simula la navegacion del barco de un puerto al siguiente"""
@@ -216,7 +216,7 @@ class Nodo:
             sucesor = Nodo(pos_barco+1, self.diccionario_pos_id.copy(), self.lista_p_init, self.lista_p_1, self.lista_p_2, coste_acumulado_local, self, "navegar("+str(pos_barco)+")")
             # Devolvemos una tupla de la forma (f(x), sucesor),
             # donde f(x) es la suma del coste acumulado y la heuristica
-            return tuple([coste_acumulado_local + heuristica(self), sucesor])
+            return tuple([coste_acumulado_local + heuristica(sucesor), sucesor])
         # Si el barco se encuentra en el puerto inicial se cumplen las precondiciones
         elif pos_barco == 0:
             # Si no ha cargado algun contenedor no puede navegar
@@ -232,7 +232,7 @@ class Nodo:
                            coste_acumulado_local, self, "navegar(" + str(pos_barco) + ")")
             # Devolvemos una tupla de la forma (f(x), sucesor),
             # donde f(x) es la suma del coste acumulado y la heuristica
-            return tuple([coste_acumulado_local + heuristica(self), sucesor])
+            return tuple([coste_acumulado_local + heuristica(sucesor), sucesor])
 
     def __lt__(self, other):
         """ Este metodo nos permite elegir que nodo es menor a otro. Se tendra en cuenta unicamente el coste acumulado"""
