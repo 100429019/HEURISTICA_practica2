@@ -314,7 +314,7 @@ def heuristica(nodo):
     Dependiendo de que heuristica se eligiera en los argumentos se usara una o la otra:
     -La primera heuristica solo tiene en cuenta los contenedores que no estan en sus puertos de destino
     -La segunda heuristica ademas de los contenedores que faltan por llegar a su destino tiene en cuenta su
-    coste fijo de descarga"""
+    coste fijo de descarga y navegar dependiendo del puerto en el que se encuentre el barco"""
     if HEURISTICA == 'heuristica1':
         return len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))
     elif HEURISTICA == 'heuristica2':
