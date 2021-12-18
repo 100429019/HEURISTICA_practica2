@@ -313,8 +313,8 @@ def heuristica(nodo):
     """ La funcion heuristica nos permite calcular el valor de la heuristica que se usara para calcular f(x) en A*
     Dependiendo de que heuristica se eligiera en los argumentos se usara una o la otra:
     -La primera heuristica solo tiene en cuenta los contenedores que no estan en sus puertos de destino
-    -La segunda heuristica ademas de los contenedores que faltan por llegar a su destino tiene en cuenta sus
-    costes fijos de carga y descarga"""
+    -La segunda heuristica ademas de los contenedores que faltan por llegar a su destino tiene en cuenta su
+    coste fijo de descarga"""
     if HEURISTICA == 'heuristica1':
         return len(dic_valores.keys()) - (len(nodo.lista_p_1) + len(nodo.lista_p_2))
     elif HEURISTICA == 'heuristica2':
